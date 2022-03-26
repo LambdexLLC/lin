@@ -10,4 +10,7 @@
 #include <lbx/lin/unit.hpp>
 #include <lbx/lin/scalar_math.hpp>
 
+#include <lbx/lin/mat.hpp>
+
+
 #endif // LBX_LIN_HPP
