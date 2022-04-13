@@ -6,15 +6,6 @@
 
 namespace lbx
 {
-	template <typename T>
-	using vec3 = vec<T, 3>;
-	
-	using uvec3 = vec<unsigned, 3>;
-	using ivec3 = vec<int, 3>;
-	using fvec3 = vec<float, 3>;
-	using dvec3 = vec<double, 3>;
-
-
 
 
 

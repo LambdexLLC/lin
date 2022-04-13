@@ -206,6 +206,8 @@ namespace lbx
 			std::array<T, 1> _LBX_LIN_VEC_ARRAY_MEMBER_NAME;
 		};
 
+		constexpr operator vec<T, 0>() const { return vec<T, 0>(); };
+
 		constexpr vec() noexcept = default;
 		constexpr vec(T x) noexcept :
 			_LBX_LIN_VEC_ARRAY_MEMBER_NAME{ x }
@@ -225,11 +227,14 @@ namespace lbx
 			std::array<T, 2> _LBX_LIN_VEC_ARRAY_MEMBER_NAME;
 		};
 
+		constexpr operator vec<T, 0>() const { return vec<T, 0>(); };
+		constexpr operator vec<T, 1>() const { return vec<T, 1>(this->at(0)); };
+
 		constexpr vec() noexcept = default;
 		constexpr vec(T x, T y) noexcept :
 			_LBX_LIN_VEC_ARRAY_MEMBER_NAME{ x, y }
 		{};	
-		constexpr vec(T v) noexcept :
+		constexpr explicit vec(T v) noexcept :
 			vec(v, v)
 		{};
 	};
@@ -248,12 +253,23 @@ namespace lbx
 			std::array<T, 3> _LBX_LIN_VEC_ARRAY_MEMBER_NAME;
 		};
 
+		constexpr operator vec<T, 0>() const { return vec<T, 0>(); };
+		constexpr operator vec<T, 1>() const { return vec<T, 1>(this->at(0)); };
+		constexpr operator vec<T, 2>() const { return vec<T, 2>(this->at(0), this->at(1)); };
+
 		constexpr vec() = default;
 		constexpr vec(T _x, T _y, T _z) noexcept :
 			_LBX_LIN_VEC_ARRAY_MEMBER_NAME{ _x, _y, _z }
 		{};
-		constexpr vec(T v) noexcept :
+		constexpr explicit vec(T v) noexcept :
 			vec(v, v, v)
+		{};
+
+		constexpr explicit vec(vec<T, 1> v, T y, T z) noexcept :
+			vec(v.x, y, z)
+		{};
+		constexpr explicit vec(vec<T, 2> v, T z) noexcept :
+			vec(v.x, v.y, z)
 		{};
 	};
 
@@ -272,12 +288,27 @@ namespace lbx
 			std::array<T, 4> _LBX_LIN_VEC_ARRAY_MEMBER_NAME;
 		};
 
+		constexpr operator vec<T, 0>() const { return vec<T, 0>(); };
+		constexpr operator vec<T, 1>() const { return vec<T, 1>(this->at(0)); };
+		constexpr operator vec<T, 2>() const { return vec<T, 2>(this->at(0), this->at(1)); };
+		constexpr operator vec<T, 3>() const { return vec<T, 3>(this->at(0), this->at(1), this->at(2)); };
+
 		constexpr vec() = default;
 		constexpr vec(T _x, T _y, T _z, T _w) noexcept :
 			_LBX_LIN_VEC_ARRAY_MEMBER_NAME{ _x, _y, _z, _w }
 		{};
-		constexpr vec(T v) noexcept :
+		constexpr explicit vec(T v) noexcept :
 			vec(v, v, v, v)
+		{};
+
+		constexpr explicit vec(vec<T, 1> v, T y, T z, T w) noexcept :
+			vec(v.x, y, z, w)
+		{};
+		constexpr explicit vec(vec<T, 2> v, T z, T w) noexcept :
+			vec(v.x, v.y, z, w)
+		{};
+		constexpr explicit vec(vec<T, 3> v, T w) noexcept :
+			vec(v.x, v.y, v.z, w)
 		{};
 	};
 
@@ -287,22 +318,37 @@ namespace lbx
 	template <typename T>
 	using vec2 = vec<T, 2>;
 	template <typename T>
+	using vec3 = vec<T, 3>;
+	template <typename T>
 	using vec4 = vec<T, 4>;
+	
 
+
+	template <typename T>
+	vec(T, T)->vec<T, 2>;
+	template <typename T>
+	vec(T, T, T)->vec<T, 3>;
+	template <typename T>
+	vec(T, T, T, T)->vec<T, 4>;
+
+
+
+
+
+	using uvec3 = vec<unsigned, 3>;
+	using ivec3 = vec<int, 3>;
+	using fvec3 = vec<float, 3>;
+	using dvec3 = vec<double, 3>;
 
 	using uvec2 = vec<unsigned, 2>;
-	using uvec4 = vec<unsigned, 4>;
-
-	using ivec2 = vec<int, 2>;
 	using ivec4 = vec<int, 4>;
-
-	using fvec2 = vec<float, 2>;
 	using fvec4 = vec<float, 4>;
-
-	using dvec2 = vec<double, 2>;
 	using dvec4 = vec<double, 4>;
 
-	
+	using uvec4 = vec<unsigned, 4>;
+	using ivec2 = vec<int, 2>;
+	using fvec2 = vec<float, 2>;
+	using dvec2 = vec<double, 2>;
 };
 
 #endif // LBX_LIN_VEC_HPP
