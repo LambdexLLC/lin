@@ -111,6 +111,11 @@ namespace lbx
 		using parent_type = impl::mat_base<T, CR, CR>;
 	public:
 		using parent_type::parent_type;
+
+		/**
+		 * @brief Initializes the matrix as an identity matrix with a given value.
+		 * @param _identityValue The value to set the diagonal positions to.
+		*/
 		constexpr mat(const T& _identityValue) :
 			parent_type{}
 		{
@@ -146,6 +151,21 @@ namespace lbx
 		_mat.at({ 3, 1 }) += _delta[1];
 		_mat.at({ 3, 2 }) += _delta[2];
 		return _mat;
+	};
+	
+	
+	
+	
+	template<typename T>
+	inline mat4<T> ortho(T _left, T _right, T _bottom, T _top)
+	{
+		mat4<T> o(static_cast<T>(1));
+		o[{ 0, 0 }] = static_cast<T>(2) / (_right - _left);
+		o[{ 1, 1 }] = static_cast<T>(2) / (_top - _bottom);
+		o[{ 2, 2 }] = -static_cast<T>(1);
+		o[{ 3, 0 }] = -(_right + _left) / (_right - _left);
+		o[{ 3, 1 }] = -(_top + _bottom) / (_top - _bottom);
+		return o;
 	};
 
 };
