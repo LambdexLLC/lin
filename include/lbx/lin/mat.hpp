@@ -3,6 +3,7 @@
 #define LBX_LIN_MAT_HPP
 
 #include <lbx/lin/vec.hpp>
+#include <lbx/lin/vector_math.hpp>
 
 #include <lbx/lin/detail/type.hpp>
 #include <lbx/lin/detail/assert.hpp>
@@ -167,6 +168,47 @@ namespace lbx
 		o[{ 3, 1 }] = -(_top + _bottom) / (_top - _bottom);
 		return o;
 	};
+
+
+
+	template<typename T>
+	inline mat4<T> look_at(const vec3<T>& _eye, const vec3<T>& _center, const vec3<T>& _up)
+	{
+		const vec3<T> f(normalize(_center - _eye));
+		const vec3<T> s(normalize(cross(f, _up)));
+		const vec3<T> u(cross(s, f));
+
+		mat4<T> Result(1);
+		Result[{ 0, 0 }] = s.x;
+		Result[{ 1, 0 }] = s.y;
+		Result[{ 2, 0 }] = s.z;
+		Result[{ 0, 1 }] = u.x;
+		Result[{ 1, 1 }] = u.y;
+		Result[{ 2, 1 }] = u.z;
+		Result[{ 0, 2 }] = -f.x;
+		Result[{ 1, 2 }] = -f.y;
+		Result[{ 2, 2 }] = -f.z;
+		Result[{ 3, 0 }] = -dot(s, _eye);
+		Result[{ 3, 1 }] = -dot(u, _eye);
+		Result[{ 3, 2 }] = dot(f, _eye);
+		return Result;
+	};
+
+	template<typename T>
+	inline mat4<T> perspective(lbx::radians fovy, T aspect, T zNear, T zFar)
+	{
+		assert(abs(aspect - std::numeric_limits<T>::epsilon()) > static_cast<T>(0));
+		
+		T const tanHalfFovy = tan(fovy / static_cast<T>(2));
+
+		mat4<T> Result(static_cast<T>(0));
+		Result[{ 0, 0 }] = static_cast<T>(1) / (aspect * tanHalfFovy);
+		Result[{ 1, 1 }] = static_cast<T>(1) / (tanHalfFovy);
+		Result[{ 2, 2 }] = -(zFar + zNear) / (zFar - zNear);
+		Result[{ 2, 3 }] = -static_cast<T>(1);
+		Result[{ 3, 2 }] = -(static_cast<T>(2) * zFar * zNear) / (zFar - zNear);
+		return Result;
+	}
 
 };
 

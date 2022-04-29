@@ -43,7 +43,6 @@ namespace lbx
 			constexpr auto end() const noexcept { return this->getarr().cend(); };
 			constexpr auto cend() const noexcept { return this->getarr().cend(); };
 
-
 			constexpr size_type size() const noexcept { return this->getarr().size(); };
 
 			constexpr pointer data() noexcept { return this->getarr().data(); };
@@ -54,6 +53,24 @@ namespace lbx
 
 			constexpr reference operator[](size_type n) noexcept { return this->at(n); };
 			constexpr const_reference operator[](size_type n) const noexcept { return this->at(n); };
+
+			/**
+			 * @brief Returns an array with the vector's elements.
+			 * @return Array with elements.
+			*/
+			constexpr auto arr() const
+			{
+				return this->getarr();
+			};
+
+			friend inline constexpr bool operator==(const crtp_type& lhs, const crtp_type& rhs)
+			{
+				return lhs.arr() == rhs.arr();
+			};
+			friend inline constexpr bool operator!=(const crtp_type& lhs, const crtp_type& rhs)
+			{
+				return lhs.arr() != rhs.arr();
+			};
 
 			friend inline constexpr crtp_type& operator+=(crtp_type& lhs, const crtp_type& rhs)
 			{

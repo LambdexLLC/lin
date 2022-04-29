@@ -78,6 +78,26 @@ namespace lbx
 			o.rep_ -= rhs;
 			return o;
 		};
+		
+		constexpr basic_unit operator*(const T& rhs) const
+		{
+			return basic_unit(this->count() * rhs);
+		};
+		constexpr basic_unit& operator*=(const T& rhs)
+		{
+			this->rep_ *= rhs;
+			return *this;
+		};
+
+		constexpr basic_unit operator/(const T& rhs) const
+		{
+			return basic_unit(this->count() / rhs);
+		};
+		constexpr basic_unit& operator/=(const T& rhs)
+		{
+			this->rep_ /= rhs;
+			return *this;
+		};
 
 		constexpr bool operator==(const basic_unit& rhs) const noexcept = default;
 		constexpr bool operator!=(const basic_unit& rhs) const noexcept = default;

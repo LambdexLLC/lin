@@ -4,11 +4,12 @@
 
 // Includes all of the main lbx-lin headers
 
-#include <lbx/lin/vec.hpp>
-#include <lbx/lin/vec3.hpp>
-
 #include <lbx/lin/unit.hpp>
 #include <lbx/lin/scalar_math.hpp>
+
+#include <lbx/lin/vec.hpp>
+#include <lbx/lin/vec3.hpp>
+#include <lbx/lin/vector_math.hpp>
 
 #include <lbx/lin/mat.hpp>
 
