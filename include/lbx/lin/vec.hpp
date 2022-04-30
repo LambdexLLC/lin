@@ -282,10 +282,10 @@ namespace lbx
 			vec(v, v, v)
 		{};
 
-		constexpr explicit vec(vec<T, 1> v, T y, T z) noexcept :
+		constexpr explicit vec(vec<T, 1> v, T y = static_cast<T>(0), T z = static_cast<T>(0)) noexcept :
 			vec(v.x, y, z)
 		{};
-		constexpr explicit vec(vec<T, 2> v, T z) noexcept :
+		constexpr explicit vec(vec<T, 2> v, T z = static_cast<T>(0)) noexcept :
 			vec(v.x, v.y, z)
 		{};
 	};
@@ -318,13 +318,13 @@ namespace lbx
 			vec(v, v, v, v)
 		{};
 
-		constexpr explicit vec(vec<T, 1> v, T y, T z, T w) noexcept :
+		constexpr explicit vec(vec<T, 1> v, T y = static_cast<T>(0), T z = static_cast<T>(0), T w = static_cast<T>(0)) noexcept :
 			vec(v.x, y, z, w)
 		{};
-		constexpr explicit vec(vec<T, 2> v, T z, T w) noexcept :
+		constexpr explicit vec(vec<T, 2> v, T z = static_cast<T>(0), T w = static_cast<T>(0)) noexcept :
 			vec(v.x, v.y, z, w)
 		{};
-		constexpr explicit vec(vec<T, 3> v, T w) noexcept :
+		constexpr explicit vec(vec<T, 3> v, T w = static_cast<T>(0)) noexcept :
 			vec(v.x, v.y, v.z, w)
 		{};
 	};

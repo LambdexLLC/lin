@@ -2,6 +2,8 @@
 #ifndef LBX_LIN_MAT_HPP
 #define LBX_LIN_MAT_HPP
 
+/** @file */
+
 #include <lbx/lin/vec.hpp>
 #include <lbx/lin/vector_math.hpp>
 
@@ -9,6 +11,7 @@
 #include <lbx/lin/detail/assert.hpp>
 
 #include <array>
+#include <initializer_list>
 
 namespace lbx
 {
@@ -28,6 +31,17 @@ namespace lbx
 			using size_type = usize;
 			using pos_type = vec2<size_type>;
 
+			using column_vec = vec<value_type, Rows>;
+
+			constexpr auto begin() { return this->data_.begin(); };
+			constexpr auto begin() const { return this->data_.cbegin(); };
+			constexpr auto cbegin() const { return this->data_.cbegin(); };
+
+			constexpr auto end() { return this->data_.end(); };
+			constexpr auto end() const { return this->data_.cend(); };
+			constexpr auto cend() const { return this->data_.cend(); };
+
+
 
 			constexpr size_type pos_to_index(pos_type _pos) const
 			{
@@ -35,6 +49,16 @@ namespace lbx
 				_LBX_LIN_ASSERT(_pos.y < Rows);
 				return (_pos.x * Columns) + _pos.y;
 			};
+
+			template <std::integral _T>
+			constexpr size_type pos_to_index(vec2<_T> _pos) const
+			{
+				_LBX_LIN_ASSERT(_pos.x < Columns);
+				_LBX_LIN_ASSERT(_pos.y < Rows);
+				return static_cast<size_type>((_pos.x * Columns) + _pos.y);
+			};
+
+
 			constexpr pos_type index_to_pos(size_type _index) const
 			{
 				vec2<size_type> _pos;
@@ -63,6 +87,19 @@ namespace lbx
 				return this->at(_index);
 			};
 
+			template <std::integral _T>
+			constexpr reference at(vec2<_T> _pos)
+			{
+				const auto _index = this->pos_to_index(_pos);
+				return this->at(_index);
+			};
+			template <std::integral _T>
+			constexpr const_reference at(vec2<_T> _pos) const
+			{
+				const auto _index = this->pos_to_index(_pos);
+				return this->at(_index);
+			};
+
 			constexpr reference operator[](size_type _index)
 			{
 				return this->at(_index);
@@ -81,35 +118,144 @@ namespace lbx
 				return this->at(_pos);
 			};
 
+			template <std::integral _T>
+			constexpr reference operator[](vec2<_T> _pos)
+			{
+				return this->at(_pos);
+			};
+			template <std::integral _T>
+			constexpr const_reference operator[](vec2<_T> _pos) const
+			{
+				return this->at(_pos);
+			};
+
 			constexpr pointer data() noexcept { return this->data_.data(); };
 			constexpr const_pointer data() const noexcept { return this->data_.data(); };
 
 			constexpr size_type size() const noexcept { return this->data_.size(); };
 			constexpr size_type size_bytes() const noexcept { return this->size() * sizeof(value_type); };
 
+			constexpr vec<T, Columns> row(size_type n) const
+			{
+				auto o = vec<T, Columns>();
+				size_type vn = 0;
+				for (auto& v : o)
+				{
+					v = this->at({ vn++, n });
+				};
+				return o;
+			};
+			constexpr vec<T, Rows> column(size_type n) const
+			{
+				auto o = vec<T, Rows>();
+				size_type vn = 0;
+				for (auto& v : o)
+				{
+					v = this->at({ n, vn++ });
+				};
+				return o;
+			};
 
+			constexpr void set_row(size_type n, vec<T, Columns> _vec)
+			{
+				size_type vn = 0;
+				for (auto& v : _vec)
+				{
+					this->at({ vn++, n }) = v;
+				};
+			};
+			constexpr void set_column(size_type n, vec<T, Rows> _vec)
+			{
+				size_type vn = 0;
+				for (auto& v : _vec)
+				{
+					this->at({ n, vn++ }) = v;
+				};
+			};
 
 			constexpr mat_base() = default;
+
+			constexpr mat_base(std::initializer_list<column_vec> _columns) :
+				data_()
+			{
+				size_type n = 0;
+				for (auto& v : _columns)
+				{
+					auto p = this->data() + this->pos_to_index({ (pos_type::value_type)n++, 0 });
+					std::copy(v.begin(), v.end(), p);
+				};
+			};
 
 		private:
 			std::array<value_type, Rows * Columns> data_;
 		};
+
+		template <typename MatT, typename T, size_t C, size_t R>
+		struct mat_interface : public mat_base<T, C, R>
+		{
+			using value_type = T;
+			using pointer = value_type*;
+			using reference = value_type&;
+			using const_pointer = const value_type*;
+			using const_reference = const value_type&;
+			using size_type = size_t;
+
+			constexpr friend inline MatT operator+(const MatT& lhs, const MatT& rhs)
+			{
+				auto o = MatT();
+				for (size_type n = 0; n != lhs.size(); ++n)
+				{
+					o[n] = lhs[n] + rhs[n];
+				};
+				return o;
+			};
+
+			constexpr friend inline MatT operator*(const MatT& lhs, const_reference rhs)
+			{
+				auto o = MatT(lhs);
+				for (auto& v : o) { v *= rhs; };
+				return o;
+			};
+			constexpr friend inline MatT operator*(const_reference lhs, const MatT& rhs)
+			{
+				auto o = MatT(rhs);
+				for (auto& v : o) { v *= lhs; };
+				return o;
+			};
+
+			constexpr friend inline MatT operator/(const MatT& lhs, const_reference rhs)
+			{
+				auto o = MatT(lhs);
+				for (auto& v : o) { v /= rhs; };
+				return o;
+			};
+			constexpr friend inline MatT operator/(const_reference lhs, const MatT& rhs)
+			{
+				auto o = MatT(rhs);
+				for (auto& v : o) { v /= lhs; };
+				return o;
+			};
+
+			using mat_base<T, C, R>::mat_base;
+		};
+
 	};
 
+
 	template <typename T, usize C, usize R>
-	struct mat : public impl::mat_base<T, C, R>
+	struct mat : public impl::mat_interface<mat<T, C, R>, T, C, R>
 	{
 	private:
-		using parent_type = impl::mat_base<T, C, R>;
+		using parent_type = impl::mat_interface<mat<T, C, R>, T, C, R>;
 	public:
 		using parent_type::parent_type;
 	};
 
 	template <typename T, usize CR>
-	struct mat<T, CR, CR> : public impl::mat_base<T, CR, CR>
+	struct mat<T, CR, CR> : public impl::mat_interface<mat<T, CR, CR>, T, CR, CR>
 	{
 	private:
-		using parent_type = impl::mat_base<T, CR, CR>;
+		using parent_type = impl::mat_interface<mat<T, CR, CR>, T, CR, CR>;
 	public:
 		using parent_type::parent_type;
 
@@ -125,6 +271,32 @@ namespace lbx
 				this->at(typename parent_type::pos_type(n)) = _identityValue;
 			};
 		};
+	};
+
+	template <typename T, size_t N>
+	constexpr T sum(const vec<T, N>& _vec)
+	{
+		auto o = T();
+		for (auto& v : _vec) { o += v; };
+		return o;
+	};
+
+	template <typename T, size_t C, size_t R>
+	constexpr vec<T, R> operator*(const mat<T, C, R>& lhs, const vec<T, R>& rhs)
+	{
+		auto o = vec<T, R>();
+		for (size_t n = 0; n != R; ++n)
+		{
+			const auto pv = sum(lhs.row(n) * rhs);
+			o[n] = pv;
+		};
+		return o;
+	};
+
+	template <typename T, size_t C, size_t R>
+	constexpr vec<T, R> operator*(const vec<T, R>& lhs, const mat<T, C, R>& rhs)
+	{
+		return rhs * lhs;
 	};
 
 
@@ -154,8 +326,26 @@ namespace lbx
 		return _mat;
 	};
 	
-	
-	
+	template <typename T, size_t Rows, size_t Columns>
+	inline mat<T, Columns, Rows> transpose(const mat<T, Rows, Columns>& _mat)
+	{
+		auto o = mat<T, Columns, Rows>();
+		for (size_t r = 0; r != Rows; ++r)
+		{
+			for (size_t c = 0; c != Columns; ++c)
+			{
+				o[vec2{ c, r }] = _mat[vec2{ r, c }];
+			};
+		};
+		return o;
+	};
+
+	template <typename T>
+	inline mat4<T> from_rows(vec4<T> a, vec4<T> b, vec4<T> c, vec4<T> d)
+	{
+		return transpose(mat4<T>{ a, b, c, d });
+	};
+
 	
 	template<typename T>
 	inline mat4<T> ortho(T _left, T _right, T _bottom, T _top)
