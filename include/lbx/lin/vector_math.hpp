@@ -125,9 +125,19 @@ namespace lbx
 	template <typename T, size_t N>
 	inline vec<radians, N> theta(const vec<T, N>& _vec)
 	{
-		auto _cos = cos(_vec);
+		auto o = vec<radians, N>();
+		{
+			auto it = _vec.begin();
+			for (auto& v : o)
+			{
+				v = radians(*it++);
+			};
+		};
+
+		auto _cos = cos(o);
 		auto _nvIt = _cos.begin();
-		auto o = vec3<radians>();
+		o = vec<radians, N>();
+
 		for (auto& v : o)
 		{
 			v = acos(*_nvIt++);
@@ -141,4 +151,5 @@ namespace lbx
 	{
 		return acos(cos(a, b));
 	};
+
 };

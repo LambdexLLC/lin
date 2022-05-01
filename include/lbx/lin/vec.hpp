@@ -395,6 +395,31 @@ namespace lbx
 	vec(T, T, T, T)->vec<T, 4>;
 
 
+	template <typename T>
+	constexpr vec<T, 0> make_vec()
+	{
+		return vec<T, 0>();
+	};
+	template <typename T>
+	constexpr vec<T, 1> make_vec(const T& x)
+	{
+		return vec<T, 1>(x);
+	};
+	template <typename T>
+	constexpr vec<T, 2> make_vec(const T& x, const T& y)
+	{
+		return vec<T, 2>(x, y);
+	};
+	template <typename T>
+	constexpr vec<T, 3> make_vec(const T& x, const T& y, const T& z)
+	{
+		return vec<T, 3>(x, y, z);
+	};
+	template <typename T>
+	constexpr vec<T, 4> make_vec(const T& x, const T& y, const T& z, const T& w)
+	{
+		return vec<T, 4>(x, y, z, w);
+	};
 
 
 

@@ -63,4 +63,12 @@ namespace lbx
 	float pow2(float v);
 	double pow2(double v);
 	long double pow2(long double v);
+
+
+	template <typename T>
+	constexpr T abs(const T& v)
+	{
+		return (v < static_cast<T>(0)) ? -v : v;
+	};
+
 };

@@ -73,18 +73,26 @@ namespace lbx
 			auto& lhs = *this;
 			return basic_unit(static_cast<rep>(lhs.count() + rhs.count()));
 		};
+
 		constexpr basic_unit& operator-=(const basic_unit& rhs)
+			requires requires(rep& l, const rep& r)
+		{
+			l -= r;
+		}
 		{
 			auto& lhs = *this;
 			lhs.rep_ -= rhs.count();
 			return lhs;
 		};
+
 		constexpr basic_unit operator-(const basic_unit& rhs) const
+		requires requires(const rep& l, const rep& r)
+		{
+			l - r;
+		}
 		{
 			auto& lhs = *this;
-			auto o = lhs;
-			o.rep_ -= rhs;
-			return o;
+			return basic_unit(static_cast<rep>(lhs.count() - rhs.count()));
 		};
 		
 		constexpr basic_unit operator*(const T& rhs) const
