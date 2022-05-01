@@ -62,7 +62,7 @@ namespace lbx
 	{
 		constexpr static degrees_unit<T> implicit_cast(const radians_unit<T>& v)
 		{
-			return degrees_unit<T>((v.count() / pi_v<T>) * T(2));
+			return degrees_unit<T>((v.count() / pi_v<T>) * T(180));
 		};
 	};
 };

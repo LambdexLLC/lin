@@ -188,6 +188,36 @@ namespace lbx
 				return o;
 			};
 
+			template <typename _T>
+			requires requires (reference a, const _T& b)
+			{
+				a *= b;
+			}
+			friend inline constexpr crtp_type operator*(const crtp_type& lhs, const _T& rhs)
+			{
+				auto o = lhs;
+				for (auto& v : o)
+				{
+					v *= rhs;
+				};
+				return o;
+			};
+
+			template <typename _T>
+			requires requires (reference a, const _T& b)
+			{
+				a /= b;
+			}
+			friend inline constexpr crtp_type operator/(const crtp_type& lhs, const _T& rhs)
+			{
+				auto o = lhs;
+				for (auto& v : o)
+				{
+					v /= rhs;
+				};
+				return o;
+			};
+
 			friend inline constexpr crtp_type operator-(const crtp_type& rhs)
 			{
 				auto o = rhs;
@@ -267,6 +297,18 @@ namespace lbx
 				T y;
 				T z;
 			};
+			
+			struct
+			{
+				vec<T, 2> xy;
+				T z_0_;
+			};
+			struct
+			{
+				T x_0_;
+				vec<T, 2> yz;
+			};
+
 			std::array<T, 3> _LBX_LIN_VEC_ARRAY_MEMBER_NAME;
 		};
 
@@ -288,6 +330,10 @@ namespace lbx
 		constexpr explicit vec(vec<T, 2> v, T z = static_cast<T>(0)) noexcept :
 			vec(v.x, v.y, z)
 		{};
+		constexpr explicit vec(T x, vec<T, 2> v) noexcept :
+			vec(x, v.x, v.y)
+		{};
+
 	};
 
 	template <typename T>

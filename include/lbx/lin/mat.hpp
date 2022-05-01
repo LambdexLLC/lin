@@ -67,73 +67,38 @@ namespace lbx
 				return _pos;
 			};
 
-			constexpr reference at(size_type _index)
+
+
+			constexpr column_vec& at(size_type _index)
 			{
 				return this->data_.at(_index);
 			};
-			constexpr const_reference at(size_type _index) const
+			constexpr const column_vec& at(size_type _index) const
 			{
 				return this->data_.at(_index);
 			};
 
 			constexpr reference at(pos_type _pos)
 			{
-				const auto _index = this->pos_to_index(_pos);
-				return this->at(_index);
+				return this->data_[_pos.x][_pos.y];
 			};
 			constexpr const_reference at(pos_type _pos) const
 			{
-				const auto _index = this->pos_to_index(_pos);
-				return this->at(_index);
+				return this->data_[_pos.x][_pos.y];
 			};
 
 			template <std::integral _T>
 			constexpr reference at(vec2<_T> _pos)
 			{
-				const auto _index = this->pos_to_index(_pos);
-				return this->at(_index);
+				return this->data_[_pos.x][_pos.y];
 			};
 			template <std::integral _T>
 			constexpr const_reference at(vec2<_T> _pos) const
 			{
-				const auto _index = this->pos_to_index(_pos);
-				return this->at(_index);
+				return this->data_[_pos.x][_pos.y];
 			};
 
-			constexpr reference operator[](size_type _index)
-			{
-				return this->at(_index);
-			};
-			constexpr const_reference operator[](size_type _index) const
-			{
-				return this->at(_index);
-			};
 
-			constexpr reference operator[](pos_type _pos)
-			{
-				return this->at(_pos);
-			};
-			constexpr const_reference operator[](pos_type _pos) const
-			{
-				return this->at(_pos);
-			};
-
-			template <std::integral _T>
-			constexpr reference operator[](vec2<_T> _pos)
-			{
-				return this->at(_pos);
-			};
-			template <std::integral _T>
-			constexpr const_reference operator[](vec2<_T> _pos) const
-			{
-				return this->at(_pos);
-			};
-
-			constexpr pointer data() noexcept { return this->data_.data(); };
-			constexpr const_pointer data() const noexcept { return this->data_.data(); };
-
-			constexpr size_type size() const noexcept { return this->data_.size(); };
-			constexpr size_type size_bytes() const noexcept { return this->size() * sizeof(value_type); };
 
 			constexpr vec<T, Columns> row(size_type n) const
 			{
@@ -156,6 +121,60 @@ namespace lbx
 				return o;
 			};
 
+
+
+			constexpr column_vec& operator[](size_type v)
+			{
+				return this->at(v);
+			};
+			constexpr const column_vec& operator[](size_type v) const
+			{
+				return this->at(v);
+			};
+
+			constexpr reference operator[](pos_type _pos)
+			{
+				return this->at(_pos);
+			};
+			constexpr const_reference operator[](pos_type _pos) const
+			{
+				return this->at(_pos);
+			};
+
+			template <std::integral _T>
+			constexpr reference operator[](vec2<_T> _pos)
+			{
+				return this->at(_pos);
+			};
+			template <std::integral _T>
+			constexpr const_reference operator[](vec2<_T> _pos) const
+			{
+				return this->at(_pos);
+			};
+
+
+
+			constexpr pointer data() noexcept { return this->data_.front().data(); };
+			constexpr const_pointer data() const noexcept { return this->data_.front().data(); };
+
+			constexpr size_type nrows() const noexcept
+			{
+				return Rows;
+			};
+			constexpr size_type ncolumns() const noexcept
+			{
+				return Columns;
+			};
+
+			constexpr size_type size() const noexcept
+			{
+				return this->nrows() * this->ncolumns();
+			};
+			constexpr size_type size_bytes() const noexcept
+			{
+				return this->size() * sizeof(value_type);
+			};
+
 			constexpr void set_row(size_type n, vec<T, Columns> _vec)
 			{
 				size_type vn = 0;
@@ -173,6 +192,8 @@ namespace lbx
 				};
 			};
 
+
+
 			constexpr mat_base() = default;
 
 			constexpr mat_base(std::initializer_list<column_vec> _columns) :
@@ -181,13 +202,13 @@ namespace lbx
 				size_type n = 0;
 				for (auto& v : _columns)
 				{
-					auto p = this->data() + this->pos_to_index({ (pos_type::value_type)n++, 0 });
+					auto p = this->at(n).data();
 					std::copy(v.begin(), v.end(), p);
 				};
 			};
 
 		private:
-			std::array<value_type, Rows * Columns> data_;
+			std::array<column_vec, Columns> data_;
 		};
 
 		template <typename MatT, typename T, size_t C, size_t R>
@@ -198,7 +219,7 @@ namespace lbx
 			using reference = value_type&;
 			using const_pointer = const value_type*;
 			using const_reference = const value_type&;
-			using size_type = size_t;
+			using size_type = usize;
 
 			constexpr friend inline MatT operator+(const MatT& lhs, const MatT& rhs)
 			{
@@ -266,9 +287,10 @@ namespace lbx
 		constexpr mat(const T& _identityValue) :
 			parent_type{}
 		{
-			for (typename parent_type::size_type n = 0; n != CR; ++n)
+			using size_type = typename parent_type::size_type;
+			for (size_type cr = 0; cr != CR; ++cr)
 			{
-				this->at(typename parent_type::pos_type(n)) = _identityValue;
+				(*this)[cr][cr] = _identityValue;
 			};
 		};
 	};

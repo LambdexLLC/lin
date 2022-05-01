@@ -76,6 +76,66 @@ namespace lbx
 		return d / (la * lb);
 	};
 
+	template <size_t N>
+	inline vec<radians::rep, N> cos(const vec<radians, N>& _vec)
+	{
+		auto o = vec<radians::rep, N>();
+		auto it = _vec.begin();
+		for (auto& v : o)
+		{
+			v = cos(*it++);
+		};
+		return o;
+	};
+	template <size_t N>
+	inline vec<radians::rep, N> sin(const vec<radians, N>& _vec)
+	{
+		auto o = vec<radians::rep, N>();
+		auto it = _vec.begin();
+		for (auto& v : o)
+		{
+			v = sin(*it++);
+		};
+		return o;
+	};
+
+	template <size_t N>
+	inline vec<degrees::rep, N> cos(const vec<degrees, N>& _vec)
+	{
+		auto o = vec<degrees::rep, N>();
+		auto it = _vec.begin();
+		for (auto& v : o)
+		{
+			v = cos(*it++);
+		};
+		return o;
+	};
+	template <size_t N>
+	inline vec<degrees::rep, N> sin(const vec<degrees, N>& _vec)
+	{
+		auto o = vec<radians::rep, N>();
+		auto it = _vec.begin();
+		for (auto& v : o)
+		{
+			v = sin(*it++);
+		};
+		return o;
+	};
+
+	template <typename T, size_t N>
+	inline vec<radians, N> theta(const vec<T, N>& _vec)
+	{
+		auto _cos = cos(_vec);
+		auto _nvIt = _cos.begin();
+		auto o = vec3<radians>();
+		for (auto& v : o)
+		{
+			v = acos(*_nvIt++);
+		};
+		return o;
+	};
+
+
 	template <typename T, size_t N>
 	inline radians theta(vec<T, N> a, vec<T, N> b)
 	{
