@@ -11,6 +11,7 @@
 #include <lbx/lin/detail/assert.hpp>
 
 #include <array>
+#include <cassert>
 #include <initializer_list>
 
 namespace lbx
@@ -381,7 +382,17 @@ namespace lbx
 		return o;
 	};
 
-
+	template<typename T>
+	inline mat4<T> ortho(T _left, T _right, T _bottom, T _top, T _zNear, T _zFar)
+	{
+		mat4<T> o(static_cast<T>(1));
+		o[{ 0, 0 }] = static_cast<T>(2) / (_right - _left);
+		o[{ 1, 1 }] = static_cast<T>(2) / (_top - _bottom);
+		o[2][2]		= -static_cast<T>(2) / (_zFar - _zNear);
+		o[{ 3, 0 }] = -(_right + _left) / (_right - _left);
+		o[{ 3, 1 }] = -(_top + _bottom) / (_top - _bottom);
+		return o;
+	};
 
 	template<typename T>
 	inline mat4<T> look_at(const vec3<T>& _eye, const vec3<T>& _center, const vec3<T>& _up)
@@ -425,4 +436,4 @@ namespace lbx
 };
 
 
-#endif // LBX_LIN_MAT_HPP
+#endif //LBX_LIN_MAT_HPP
