@@ -152,4 +152,15 @@ namespace lbx
 		return acos(cos(a, b));
 	};
 
+	template <typename T, size_t N>
+	constexpr vec<T, N> abs(const vec<T, N>& _vec)
+	{
+		auto o = vec<T, N>(_vec);
+		for (auto& v : o)
+		{
+			v = abs(v);
+		};
+		return o;
+	};
+
 };
