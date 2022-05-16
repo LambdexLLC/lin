@@ -18,7 +18,7 @@ namespace lbx
 {
 	namespace impl
 	{
-		template <typename T, usize Columns, usize Rows>
+		template <typename T, size_t Columns, size_t Rows>
 		struct mat_base
 		{
 		public:
@@ -29,7 +29,7 @@ namespace lbx
 			using const_pointer = const value_type*;
 			using const_reference = const value_type&;
 
-			using size_type = usize;
+			using size_type = size_t;
 			using pos_type = vec2<size_type>;
 
 			using column_vec = vec<value_type, Rows>;
@@ -220,7 +220,7 @@ namespace lbx
 			using reference = value_type&;
 			using const_pointer = const value_type*;
 			using const_reference = const value_type&;
-			using size_type = usize;
+			using size_type = size_t;
 
 			constexpr friend inline MatT operator+(const MatT& lhs, const MatT& rhs)
 			{
@@ -264,7 +264,7 @@ namespace lbx
 	};
 
 
-	template <typename T, usize C, usize R>
+	template <typename T, size_t C, size_t R>
 	struct mat : public impl::mat_interface<mat<T, C, R>, T, C, R>
 	{
 	private:
@@ -273,7 +273,7 @@ namespace lbx
 		using parent_type::parent_type;
 	};
 
-	template <typename T, usize CR>
+	template <typename T, size_t CR>
 	struct mat<T, CR, CR> : public impl::mat_interface<mat<T, CR, CR>, T, CR, CR>
 	{
 	private:
@@ -357,7 +357,7 @@ namespace lbx
 		{
 			for (size_t c = 0; c != Columns; ++c)
 			{
-				o[vec2{ c, r }] = _mat[vec2{ r, c }];
+				o[c][r] = _mat[r][c];
 			};
 		};
 		return o;
